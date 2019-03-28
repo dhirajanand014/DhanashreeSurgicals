@@ -80,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
         ObservableObject.getInstance().addObserver(this);
         registerReceiver(networkChangeReceiver, intentFilter);
         webView.getSettings().setAppCachePath(this.getApplicationContext().getCacheDir().getAbsolutePath());
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //loads from cache or looks up to the network.
+            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        }
         webView.getSettings().setDatabaseEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAppCacheEnabled(true);
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 openFileChooser(uploadMsg, "");
             }
 
-            //openFileChooser for other Android versions
+            //openFileChooser for other Android versetCacheModesions
             public void openFileChooser(ValueCallback<Uri> uploadMsg,
                                         String acceptType,
                                         String capture) {
@@ -337,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
      * @return
      * @throws IOException
      */
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
